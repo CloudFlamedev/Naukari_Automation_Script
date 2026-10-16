@@ -188,14 +188,14 @@ def safety_check_remove(skill: str, cfg: dict) -> None:
 # ---------------------------------------------------------------------------
 
 
-def run_morning(cfg: dict, dry_run: bool) -> None:
+def run_morning(cfg: dict, dry_run: bool, headless: bool = False) -> None:
     """Morning session: add one skill from the approved list."""
     logger.info("=== MORNING SESSION%s ===", " (DRY RUN)" if dry_run else "")
 
     timeout_ms = cfg.get("settings", {}).get("page_load_timeout_ms", 30_000)
     profile_dir = get_profile_dir(BASE_DIR)
 
-    with NaukriBrowser(profile_dir, headless=False, timeout_ms=timeout_ms) as nb:
+    with NaukriBrowser(profile_dir, headless=headless, timeout_ms=timeout_ms) as nb:
         nb.ensure_logged_in(strict=True)
         nb.go_to_profile()
 
@@ -230,14 +230,14 @@ def run_morning(cfg: dict, dry_run: bool) -> None:
             logger.error("RESULT: FAILED — could not add '%s'.", skill)
 
 
-def run_evening(cfg: dict, dry_run: bool) -> None:
+def run_evening(cfg: dict, dry_run: bool, headless: bool = False) -> None:
     """Evening session: remove one approved skill from the profile."""
     logger.info("=== EVENING SESSION%s ===", " (DRY RUN)" if dry_run else "")
 
     timeout_ms = cfg.get("settings", {}).get("page_load_timeout_ms", 30_000)
     profile_dir = get_profile_dir(BASE_DIR)
 
-    with NaukriBrowser(profile_dir, headless=False, timeout_ms=timeout_ms) as nb:
+    with NaukriBrowser(profile_dir, headless=headless, timeout_ms=timeout_ms) as nb:
         nb.ensure_logged_in(strict=True)
         nb.go_to_profile()
 
@@ -303,11 +303,11 @@ def run_login_only() -> None:
 
 
 
-def run_status() -> None:
+def run_status(headless: bool = False) -> None:
     """Read and print the current skills without making any changes."""
     logger.info("=== STATUS (read-only) ===")
     profile_dir = get_profile_dir(BASE_DIR)
-    with NaukriBrowser(profile_dir, headless=False) as nb:
+    with NaukriBrowser(profile_dir, headless=headless) as nb:
         nb.ensure_logged_in()
         nb.go_to_profile()
         skills = nb.get_current_skills()
@@ -358,6 +358,12 @@ def parse_args() -> argparse.Namespace:
         default=False,
         help="Simulate the session without making any profile changes.",
     )
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        default=False,
+        help="Run browser in headless mode (recommended for cron or background jobs).",
+    )
     return parser.parse_args()
 
 
@@ -366,9 +372,10 @@ def main() -> None:
     setup_logging(args.session)
 
     logger.info(
-        "Naukri Skill Updater starting | session=%s | dry_run=%s",
+        "Naukri Skill Updater starting | session=%s | dry_run=%s | headless=%s",
         args.session,
         args.dry_run,
+        args.headless,
     )
 
     if args.session in ("login", "status"):
@@ -376,7 +383,7 @@ def main() -> None:
         if args.session == "login":
             run_login_only()
         else:
-            run_status()
+            run_status(headless=args.headless)
         return
 
     cfg = load_config()
@@ -384,9 +391,9 @@ def main() -> None:
 
     try:
         if args.session == "morning":
-            run_morning(cfg, dry_run=args.dry_run)
+            run_morning(cfg, dry_run=args.dry_run, headless=args.headless)
         elif args.session == "evening":
-            run_evening(cfg, dry_run=args.dry_run)
+            run_evening(cfg, dry_run=args.dry_run, headless=args.headless)
     except RuntimeError as exc:
         logger.error("Session aborted: %s", exc)
         sys.exit(1)

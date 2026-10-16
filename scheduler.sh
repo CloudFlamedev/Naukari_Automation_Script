@@ -19,8 +19,16 @@ MAIN="${SCRIPT_DIR}/main.py"
 LOG_CRON="${SCRIPT_DIR}/logs/cron.log"
 CRON_TAG="# naukri-skill-updater"
 
-MORNING_CRON="0 9 * * * export DISPLAY=\${DISPLAY:-:0}; export TZ=Asia/Kolkata; ${VENV_PYTHON} ${MAIN} morning >> ${LOG_CRON} 2>&1 ${CRON_TAG}"
-EVENING_CRON="0 19 * * * export DISPLAY=\${DISPLAY:-:0}; export TZ=Asia/Kolkata; ${VENV_PYTHON} ${MAIN} evening >> ${LOG_CRON} 2>&1 ${CRON_TAG}"
+# Use xvfb-run to provide an in-memory virtual display if available (avoids bot detection),
+# or fall back to --headless if xvfb-run is not installed.
+if command -v xvfb-run >/dev/null 2>&1; then
+  CMD_RUNNER="xvfb-run -a ${VENV_PYTHON} ${MAIN}"
+else
+  CMD_RUNNER="${VENV_PYTHON} ${MAIN} --headless"
+fi
+
+MORNING_CRON="0 9 * * * export TZ=Asia/Kolkata; ${CMD_RUNNER} morning >> ${LOG_CRON} 2>&1 ${CRON_TAG}"
+EVENING_CRON="0 19 * * * export TZ=Asia/Kolkata; ${CMD_RUNNER} evening >> ${LOG_CRON} 2>&1 ${CRON_TAG}"
 
 cmd="${1:-status}"
 
@@ -32,8 +40,8 @@ case "$cmd" in
       | { cat; echo "${MORNING_CRON}"; echo "${EVENING_CRON}"; } \
       | crontab -
     echo "✅  Cron jobs installed."
-    echo "    Morning : 9:00 AM IST (09:00) → python main.py morning"
-    echo "    Evening : 7:00 PM IST (19:00) → python main.py evening"
+    echo "    Morning : 9:00 AM IST (09:00) → ${CMD_RUNNER} morning"
+    echo "    Evening : 7:00 PM IST (19:00) → ${CMD_RUNNER} evening"
     echo "    Cron log: ${LOG_CRON}"
     ;;
 
