@@ -1,0 +1,54 @@
+{
+  "_comment": "Edit these lists to match YOUR actual skills. The examples here are placeholders only.",
+
+  "approved_skills_to_add": [
+    "Pyspark"
+  ],
+
+  "approved_skills_to_remove": [
+    "Pyspark"
+  ],
+
+  "core_skills_to_preserve": [
+    "Model Context Protocol (MCP)",
+    "Django Framework",
+    "Prompt Engineering",
+    "Microservices",
+    "Github",
+    "Terraform",
+    "Ci/Cd",
+    "Jenkins",
+    "Kubernetes",
+    "Docker",
+    "AWS",
+    "SQL",
+    "Postgresql",
+    "Rest APIs",
+    "Langgraph",
+    "Langchain",
+    "RAG",
+    "LLM",
+    "FastAPI",
+    "generative ai",
+    "Genrative Ai",
+    "Python"
+  ],
+
+  "morning_schedule": {
+    "cron": "0 9 * * *",
+    "description": "9:00 AM IST daily"
+  },
+
+  "evening_schedule": {
+    "cron": "0 19 * * *",
+    "description": "7:00 PM IST daily"
+  },
+
+  "settings": {
+    "max_skills_on_profile": 30,
+    "skill_add_strategy": "round_robin",
+    "lock_timeout_seconds": 300,
+    "page_load_timeout_ms": 30000,
+    "action_delay_ms": 1500
+  }
+}

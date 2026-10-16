@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Browser profile (contains session cookies, tokens, and local storage)
+# NEVER commit this to GitHub
+browser_profile/
+
+# Execution logs
+logs/
+*.log
+
+# Lock and state files
+naukri_updater.lock
+state.json
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store

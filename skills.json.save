@@ -1,0 +1,43 @@
+{
+  "_comment": "Edit these lists to match YOUR actual skills. The examples here are placeholders only.",
+
+  "approved_skills_to_add": [
+    "Python",
+    "SQL",
+    "AWS",
+    "Generative AI",
+    "RAG",
+    "LangChain",
+    "LangGraph",
+    "Docker"
+  ],
+
+  "approved_skills_to_remove": [
+    "LangGraph",
+    "RAG"
+  ],
+
+  "core_skills_to_preserve": [
+    "Python",
+    "SQL",
+    "AWS"
+  ],
+
+  "morning_schedule": {
+    "cron": "0 9 * * *",
+    "description": "9:00 AM IST daily"
+  },
+
+  "evening_schedule": {
+    "cron": "0 19 * * *",
+    "description": "7:00 PM IST daily"
+  },
+
+  "settings": {
+    "max_skills_on_profile": 15,
+    "skill_add_strategy": "round_robin",
+    "lock_timeout_seconds": 300,
+    "page_load_timeout_ms": 30000,
+    "action_delay_ms": 1500
+  }
+}
